@@ -1,0 +1,98 @@
+{
+  "meta_info": {
+    "mode": "single_table",
+    "table_name": "export.app_schedule_use_analysis_use",
+    "partition_field": "dt",
+    "date_field": "rpt_date",
+    "time_field": "sum_type",
+    "description": "智能排班-使用分析-使用"
+  },
+
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "REGION_MANAGE", "TRANSFER_CENTER", "EMP"],
+      "level_field": "org_type",
+      "mapping": {
+        "HEAD": "全国",
+        "REGION_MANAGE": "省区",
+        "TRANSFER_CENTER": "中心",
+        "EMP": "人员"
+      }
+    },
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M", "Y"]
+    },
+    "tab_dimensions": {
+      "first_tab_type": {
+        "values": ["1", "2", "3", "4", "5"],
+        "labels": {
+          "1": "全部",
+          "2": "部长",
+          "3": "副部长",
+          "4": "主管",
+          "5": "组长"
+        },
+        "description": "人员层级维度"
+      }
+    }
+  },
+
+  "metric_definitions": [
+    {
+      "code": "work_emp_num",
+      "name": "在职人数",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "pre_use_num",
+      "name": "应使用人数",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "real_use_num",
+      "name": "实际使用人数",
+      "base_aggregation": "SUM",
+      "data_type": "decimal",
+      "special_aggregation": {
+        "applies_to_hierarchy": "TRANSFER_CENTER",
+        "source_level": "EMP",
+        "expression": "SUM(CASE WHEN use_times > 0 THEN 1 ELSE 0 END)",
+        "description": "EMP->TRANSFER_CENTER 汇总时，使用次数>0 则实际使用人数+1"
+      }
+    },
+    {
+      "code": "use_rate",
+      "name": "使用率",
+      "base_aggregation": "DERIVED",
+      "formula": "real_use_num / pre_use_num * 100",
+      "data_type": "decimal"
+    }
+  ],
+
+  "hierarchy_logic": [
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["REGION_MANAGE"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "first_tab_type"]}
+    },
+    {
+      "target_level": "REGION_MANAGE",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TRANSFER_CENTER"]},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "rpt_date", "sum_type", "first_tab_type"]}
+    },
+    {
+      "target_level": "TRANSFER_CENTER",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["EMP"]},
+      "aggregation_granularity": {"group_by_fields": ["center_code", "center_name", "rpt_date", "sum_type", "first_tab_type"]}
+    }
+  ],
+
+  "diff_threshold": 0.0,
+  "output_format": "sql"
+}

@@ -1,0 +1,15 @@
+# 模板占位符说明：
+# - {{menu_name_cn}}: 菜单中文名（Allure feature），例如 "仲裁时效"
+caseName,sumType,queryType,firstTabType,secondTabType
+{{menu_name_cn}}-明细列表-日维度-申报-全部,D,date,1,1
+{{menu_name_cn}}-明细列表-日维度-申报-遗失,D,date,1,2
+{{menu_name_cn}}-明细列表-日维度-申报-异常,D,date,1,3
+{{menu_name_cn}}-明细列表-日维度-被申报-全部,D,date,2,1
+{{menu_name_cn}}-明细列表-日维度-被申报-遗失,D,date,2,2
+{{menu_name_cn}}-明细列表-日维度-被申报-异常,D,date,2,3
+{{menu_name_cn}}-明细列表-月维度-申报-全部,M,month,1,1
+{{menu_name_cn}}-明细列表-月维度-申报-遗失,M,month,1,2
+{{menu_name_cn}}-明细列表-月维度-申报-异常,M,month,1,3
+{{menu_name_cn}}-明细列表-月维度-被申报-全部,M,month,2,1
+{{menu_name_cn}}-明细列表-月维度-被申报-遗失,M,month,2,2
+{{menu_name_cn}}-明细列表-月维度-被申报-异常,M,month,2,3

@@ -1,0 +1,89 @@
+{
+  "meta_info": {
+    "mode": "single_table",
+    "table_name": "ytrpt.app_platform_photo_total",
+    "partition_field": "dt",
+    "date_field": "rpt_date",
+    "time_field": "sum_type"
+  },
+
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "REGION_MANAGE", "TRANSFER_CENTER", "GRID_AREA", "BRANCH", "DEPT", "EMP"],
+      "level_field": "org_type",
+      "mapping": {
+        "HEAD": "全国",
+        "REGION_MANAGE": "省区",
+        "TRANSFER_CENTER": "中心",
+        "GRID_AREA": "城市片区",
+        "BRANCH": "分公司",
+        "DEPT": "分部门",
+        "EMP": "员工"
+      }
+    },
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M"]
+    },
+    "platform_type": {
+      "field": "platform_type",
+      "enum_values": ["1", "2", "3", "4", "5", "6"],
+      "mapping": {
+        "1": "全部",
+        "2": "抖音",
+        "3": "淘系",
+        "4": "多多",
+        "5": "小红书",
+        "6": "其它"
+      }
+    }
+  },
+
+  "metric_definitions": [
+    {"code": "should_photo_sign_num", "name": "应该拍照签收量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "location_photo_num", "name": "位置照件量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "push_num", "name": "推送件量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "coverage_rate", "name": "覆盖率", "base_aggregation": "DERIVED", "formula": "push_num / should_photo_sign_num", "data_type": "decimal"}
+  ],
+
+  "hierarchy_logic": [
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["REGION_MANAGE"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "platform_type"]}
+    },
+    {
+      "target_level": "REGION_MANAGE",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TRANSFER_CENTER"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "platform_type", "region_code"]}
+    },
+    {
+      "target_level": "TRANSFER_CENTER",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["GRID_AREA"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "platform_type", "region_code", "center_code"]}
+    },
+    {
+      "target_level": "GRID_AREA",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["BRANCH"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "platform_type", "region_code", "center_code", "grid_code"]}
+    },
+    {
+      "target_level": "BRANCH",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["DEPT"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "platform_type", "region_code", "center_code", "grid_code", "branch_code"]}
+    },
+    {
+      "target_level": "DEPT",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["EMP"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "platform_type", "region_code", "center_code", "grid_code", "branch_code", "dept_code"]}
+    }
+  ],
+
+  "diff_threshold": 0.0
+}

@@ -1,0 +1,50 @@
+name: dataware-sum
+version: "2.0"
+description: >
+  数仓汇总表验证。支持单表层级比对（汇总表内部各层级一致性验证）
+  和双表明细汇总比对（明细表聚合值 vs 汇总表）。支持直接粘贴 DDL
+  或通过 MCP (mysql-server) 查询表结构，生成验证 SQL。
+
+entry:
+  instructions: SKILL.md
+  cli: scripts/cli.py
+
+capabilities:
+  - 单表模式：验证汇总表内部各层级汇总一致性
+  - 双表模式：验证明细表与汇总表的数据对应关系
+
+triggers:
+  keywords:
+    - 数仓测试
+    - 数据审核
+    - 汇总验证
+    - 明细表和汇总表比对
+    - 生成测试SQL
+    - 验证汇总层级
+  table_patterns:
+    - "*_total_*"
+    - "*_summary_*"
+    - "*_detail_*"
+
+tools:
+  mcp_query:
+    description: 通过 mysql-server MCP 查询表结构 (SHOW CREATE TABLE / DESCRIBE)
+    mcp_server: mysql-server
+  audit:
+    description: 质量审核 - 检查 JSON 配置的完整性和正确性
+    command: python {cli} audit {config_file}
+    exit_codes:
+      0: PASS
+      1: FAIL
+      2: WARN
+  generate:
+    description: SQL 生成 - 基于 JSON 配置生成测试 SQL
+    command: python {cli} generate {config_file} --output {output_file} --threshold {threshold}
+  pipeline:
+    description: 一键执行审核 + 生成
+    command: python {cli} pipeline {config_file} --output {output_file} --threshold {threshold}
+
+references:
+  examples:
+    single_table: references/json-config-examples/single_table_example.json
+    double_table: references/json-config-examples/double_table_example.json

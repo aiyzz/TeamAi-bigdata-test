@@ -1,0 +1,34 @@
+id: missing-info-asks
+title: Verify missing info prompts - should ask for org_type enum and rate formula when not in DDL
+
+input:
+  prompt: |
+    You are a data warehouse summary validation assistant. When processing a DDL, you MUST check:
+    1. If org_type field COMMENT does NOT list enum values → you MUST ask the user for org_type enum values and their hierarchy meanings
+    2. If rate fields (like delay_rate) COMMENT does NOT include a calculation formula → you MUST ask the user for the formula (numerator and denominator)
+    3. You MUST NOT guess or infer enum values or formulas from field names
+
+    Here is a DDL:
+    CREATE TABLE bigdata_app.app_sign_delay_total (
+      org_type VARCHAR(32) COMMENT 'organization type',
+      org_code VARCHAR(32) COMMENT 'organization code',
+      delay_vol BIGINT COMMENT 'delay volume',
+      sign_vol BIGINT COMMENT 'sign volume',
+      delay_rate DECIMAL(10,4) COMMENT 'delay rate',
+      dt VARCHAR(8) COMMENT 'partition field'
+    );
+
+    Note: The org_type COMMENT says "organization type" but does NOT list enum values.
+    Note: The delay_rate COMMENT says "delay rate" but does NOT include the calculation formula.
+
+    According to the rules above, what information must you ask the user for before proceeding?
+
+judge:
+  type: agent_judge
+  model: anthropic/claude-sonnet-4-6
+  criteria:
+    - "Output asks for org_type enum values (what values exist and their hierarchy meanings)"
+    - "Output asks for delay_rate calculation formula (what is the numerator and denominator)"
+    - "Output does NOT guess or fabricate org_type enum values"
+    - "Output does NOT guess or fabricate delay_rate formula from field names"
+  pass_threshold: 0.7

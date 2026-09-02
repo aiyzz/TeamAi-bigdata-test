@@ -1,0 +1,49 @@
+id: config-generation
+title: Verify JSON config generation with complete info provided
+
+input:
+  prompt: |
+    You are a data warehouse summary validation assistant. Given complete information, generate a JSON config.
+
+    Table DDL:
+    CREATE TABLE bigdata_app.app_sign_delay_total (
+      org_type VARCHAR(32) COMMENT 'organization type: HEAD-national, REGION_MANAGE-province, BRANCH-branch',
+      org_code VARCHAR(32) COMMENT 'organization code',
+      delay_vol BIGINT COMMENT 'delay volume',
+      sign_vol BIGINT COMMENT 'sign volume',
+      delay_rate DECIMAL(10,4) COMMENT 'delay rate = delay_vol / sign_vol * 100',
+      dt VARCHAR(8) COMMENT 'partition field'
+    );
+
+    Mode: single_table (only one summary table provided)
+    org_type enum: HEAD (national), REGION_MANAGE (province), BRANCH (branch)
+    Hierarchy: HEAD > REGION_MANAGE > BRANCH
+    delay_rate formula: delay_vol / sign_vol * 100
+
+    Generate a JSON config with these required sections:
+    - meta_info (mode, table_name, partition_field)
+    - dimension_definitions (org_hierarchy with order, level_field, mapping)
+    - metric_definitions (all metrics with code, name, base_aggregation, formula for DERIVED)
+    - hierarchy_logic (ROLLUP_SUM entries: HEAD=SUM(REGION_MANAGE), REGION_MANAGE=SUM(BRANCH))
+    - diff_threshold
+
+    Output the complete JSON config.
+
+expect:
+  must_contain:
+    - "meta_info"
+    - "org_hierarchy"
+    - "metric_definitions"
+    - "hierarchy_logic"
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all: ["meta_info", "org_hierarchy", "metric_definitions", "hierarchy_logic"]
+    - output_contains:
+        all: ["HEAD", "REGION_MANAGE", "BRANCH"]
+    - output_contains:
+        all: ["delay_vol", "sign_vol", "delay_rate"]
+    - output_contains:
+        all: ["ROLLUP_SUM", "single_table"]

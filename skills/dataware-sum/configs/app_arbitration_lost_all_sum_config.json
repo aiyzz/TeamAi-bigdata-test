@@ -1,0 +1,111 @@
+{
+  "meta_info": {
+    "mode": "single_table",
+    "table_name": "bigdata_app.app_arbitration_lost_all_sum",
+    "partition_field": "rpt_date",
+    "date_field": "rpt_date",
+    "time_field": "sum_type",
+    "description": "仲裁遗失汇总表 - 验证全国→省区→中心三级数据汇总一致性"
+  },
+  
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "REGION_MANAGE", "TRANSFER_CENTER"],
+      "mapping": {
+        "HEAD": "全国",
+        "REGION_MANAGE": "省区",
+        "TRANSFER_CENTER": "中心 1"
+      },
+      "level_field": "org_type"
+    },
+    
+    "org_dimension": {
+      "fields": ["region_code", "region_name", "center_code", "center_name", "branch_code", "branch_name"],
+      "sub_dimensions": {
+        "region": ["region_code", "region_name"],
+        "center": ["center_code", "center_name"],
+        "branch": ["branch_code", "branch_name"]
+      }
+    },
+    
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M", "Y"]
+    }
+  },
+  
+  "metric_definitions": [
+    {
+      "code": "lost_num",
+      "name": "遗失量",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "last_lost_num",
+      "name": "去年遗失量",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "delivery_num",
+      "name": "派件量 (操作量)",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "last_delivery_num",
+      "name": "去年派件量 (操作量)",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "issue_num",
+      "name": "问题件",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "coordinate_num",
+      "name": "协调",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "complaint_num",
+      "name": "投诉",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    },
+    {
+      "code": "decide_num",
+      "name": "仲裁",
+      "base_aggregation": "SUM",
+      "data_type": "decimal"
+    }
+  ],
+  
+  "hierarchy_logic": [
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["REGION_MANAGE"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type"]}
+    },
+    {
+      "target_level": "REGION_MANAGE",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TRANSFER_CENTER"]},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "rpt_date", "sum_type"]}
+    },
+    {
+      "target_level": "TRANSFER_CENTER",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": []},
+      "aggregation_granularity": {"group_by_fields": ["center_code", "center_name", "rpt_date", "sum_type"]}
+    }
+  ],
+  
+  "diff_threshold": 0.1,
+  "output_format": "sql"
+}

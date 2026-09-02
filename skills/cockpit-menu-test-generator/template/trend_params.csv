@@ -1,0 +1,23 @@
+# 模板占位符说明：
+# - {{menu_name_cn}}: 菜单中文名（Allure feature），例如 "仲裁时效"
+caseName,queryType,firstTabType,secondTabType,sumType
+{{menu_name_cn}}-日维度-申报维度-全部维度,date,1,1,D
+{{menu_name_cn}}-日维度-申报维度-遗失维度,date,1,2,D
+{{menu_name_cn}}-日维度-申报维度-异常维度,date,1,3,D
+{{menu_name_cn}}-日维度-申报维度-延误维度,date,1,4,D
+{{menu_name_cn}}-日维度-申报维度-规范维度,date,1,5,D
+{{menu_name_cn}}-日维度-被申报维度-全部维度,date,2,1,D
+{{menu_name_cn}}-日维度-被申报维度-遗失维度,date,2,2,D
+{{menu_name_cn}}-日维度-被申报维度-异常维度,date,2,3,D
+{{menu_name_cn}}-日维度-被申报维度-延误维度,date,2,4,D
+{{menu_name_cn}}-日维度-被申报维度-规范维度,date,2,5,D
+{{menu_name_cn}}-月维度-申报维度-全部维度,month,1,1,M
+{{menu_name_cn}}-月维度-申报维度-遗失维度,month,1,2,M
+{{menu_name_cn}}-月维度-申报维度-异常维度,month,1,3,M
+{{menu_name_cn}}-月维度-申报维度-延误维度,month,1,4,M
+{{menu_name_cn}}-月维度-申报维度-规范维度,month,1,5,M
+{{menu_name_cn}}-月维度-被申报维度-全部维度,month,2,1,M
+{{menu_name_cn}}-月维度-被申报维度-遗失维度,month,2,2,M
+{{menu_name_cn}}-月维度-被申报维度-异常维度,month,2,3,M
+{{menu_name_cn}}-月维度-被申报维度-延误维度,month,2,4,M
+{{menu_name_cn}}-月维度-被申报维度-规范维度,month,2,5,M

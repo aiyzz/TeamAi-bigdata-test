@@ -1,0 +1,5 @@
+# 模板占位符说明：
+# - {{menu_name_cn}}: 菜单中文名（Allure feature），例如 "仲裁时效"
+caseName,sumType
+{{menu_name_cn}}-日维度,D
+{{menu_name_cn}}-月维度,M

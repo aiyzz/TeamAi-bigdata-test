@@ -1,0 +1,56 @@
+【结构规范性检查】
+
+| 检查项 | 状态 | 说明 |
+|--------|------|------|
+| meta_info 存在 | ✅ PASS | - |
+| meta_info.table_name 存在 | ✅ PASS | export.app_schedule_use_analysis_use |
+| meta_info.partition_field 存在 | ✅ PASS | dt |
+| meta_info.mode 存在 | ✅ PASS | single_table |
+| dimension_definitions 存在 | ✅ PASS | - |
+| org_hierarchy 存在 | ✅ PASS | - |
+| org_hierarchy.order 存在 | ✅ PASS | 4 个层级: HEAD, REGION_MANAGE, TRANSFER_CENTER, EMP |
+| org_hierarchy.level_field 存在 | ✅ PASS | org_type |
+| metric_definitions 存在且非空 | ✅ PASS | 4 个指标 |
+| hierarchy_logic 存在且非空 | ✅ PASS | 3 条规则 |
+| diff_threshold 存在 | ✅ PASS | 0.0 |
+
+统计：11 项通过 / 0 项警告 / 0 项失败
+
+---
+
+【内容正确性检查】
+
+| 检查项 | 状态 | 说明 |
+|--------|------|------|
+| metric_definitions code 唯一 | ✅ PASS | 4 个指标无重复: work_emp_num, pre_use_num, real_use_num, use_rate |
+| DERIVED use_rate 有 formula | ✅ PASS | real_use_num / pre_use_num * 100 |
+| DERIVED use_rate 公式变量正确 | ✅ PASS | real_use_num, pre_use_num 均已定义 |
+| DERIVED use_rate 无循环引用 | ✅ PASS | use_rate 依赖 SUM 类型指标，无环 |
+| ROLLUP_SUM: HEAD > REGION_MANAGE | ✅ PASS | index 0 < 1 |
+| ROLLUP_SUM: REGION_MANAGE > TRANSFER_CENTER | ✅ PASS | index 1 < 2 |
+| ROLLUP_SUM: TRANSFER_CENTER > EMP | ✅ PASS | index 2 < 3 |
+| group_by_fields 非空 | ✅ PASS | 各层级均有分组字段 |
+| group_by_fields 字段值一致 | ✅ PASS | 已排除 position/dept 系列字段，仅保留各层级一致的维度 |
+| 时间粒度枚举值有效 | ✅ PASS | D, M, Y |
+
+统计：10 项通过 / 0 项警告 / 0 项失败
+
+---
+
+【数据类型一致性检查】
+
+| 检查项 | 状态 | 说明 |
+|--------|------|------|
+| DERIVED use_rate 有公式 | ✅ PASS | real_use_num / pre_use_num * 100 |
+| 指标 work_emp_num 类型为 decimal | ✅ PASS | - |
+| 指标 pre_use_num 类型为 decimal | ✅ PASS | - |
+| 指标 real_use_num 类型为 decimal | ✅ PASS | - |
+| 指标 use_rate 类型为 decimal | ✅ PASS | - |
+| diff_threshold = 0.0 | ✅ PASS | 非负数 |
+
+统计：6 项通过 / 0 项警告 / 0 项失败
+
+---
+
+汇总统计：26 项通过 / 0 项警告 / 0 项失败
+结论：PASS

@@ -1,0 +1,50 @@
+name: atomic-data-verify
+version: "1.0"
+description: >
+  原子数据验证技能。不区分场景，自动识别所需原子能力并组合执行。
+  支持5种原子能力：数据质量检查、验证不变更记录、验证增加记录、验证减少记录、验证字段增减。
+
+entry:
+  instructions: skill.md
+
+capabilities:
+  原子能力:
+    - 能力0: 数据质量检查（必选）
+    - 能力1: 验证不变更记录（优化需求核心能力）
+    - 能力2: 验证增加记录
+    - 能力3: 验证减少记录
+    - 能力4: 验证字段增减
+  通用能力:
+    - 表元数据管理：优先从 dataware_table/ 知识库读取，无记录时查询 MCP 并写入
+    - 能力自动判别：需求文档分析 + 数据探查，自动识别所需能力
+    - 验数知识沉淀：SQL 语法经验、数据规律、踩坑记录自动沉淀到 knowledge/
+
+triggers:
+  keywords:
+    - 原子验证
+    - 数据验证
+    - 优化验证
+    - 数据比对
+    - 一致性校验
+    - 新增数据验证
+    - 剔除验证
+    - 字段变更验证
+    - 模型表优化
+    - atomic verify
+
+templates:
+  quality_check:
+    description: 数据质量校验 SQL
+    file: templates/quality-check-sql.md
+  diff_rows:
+    description: 差异行查找与数据量变化 SQL
+    file: templates/diff-rows-sql.md
+  field_compare:
+    description: 字段比对与差异明细 SQL
+    file: templates/field-compare-sql.md
+  etl_transform:
+    description: ETL转换逻辑验证 SQL
+    file: templates/etl-transform-sql.md
+  filter_verify:
+    description: 数据剔除验证 SQL
+    file: templates/filter-verify-sql.md

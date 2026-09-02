@@ -1,0 +1,100 @@
+{
+  "meta_info": {
+    "mode": "double_table",
+    "table_name": "ytrpt.app_platform_photo_total",
+    "detail_table_name": "ytrpt.app_platform_photo_detail",
+    "partition_field": "dt",
+    "date_field": "rpt_date",
+    "time_field": "sum_type"
+  },
+
+  "detail_summary_mapping": {
+    "join_keys": ["dt", "emp_code", "platform_type"],
+    "filter_dimensions_join": {
+      "platform_type": {
+        "detail_values": ["2", "3", "4", "5", "6"],
+        "summary_filter": "platform_type != '1'"
+      }
+    },
+    "metric_mapping": [
+      {"summary_field": "push_num", "detail_aggregation": "COUNT(DISTINCT waybill_no)"},
+      {"summary_field": "location_photo_num", "detail_aggregation": "COUNT(DISTINCT CASE WHEN file_type IS NULL THEN waybill_no END)"},
+      {"summary_field": "should_photo_sign_num", "detail_aggregation": "COUNT(DISTINCT waybill_no)"}
+    ],
+    "group_by_mapping": ["dt", "platform_type", "emp_code", "emp_name", "branch_code", "branch_name", "grid_code", "grid_name", "center_code", "center_name", "region_code", "region_name"],
+    "summary_where": "sum_type = 'D'"
+  },
+
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "REGION_MANAGE", "TRANSFER_CENTER", "GRID_AREA", "BRANCH", "DEPT", "EMP"],
+      "level_field": "org_type",
+      "mapping": {
+        "HEAD": "全国",
+        "REGION_MANAGE": "省区",
+        "TRANSFER_CENTER": "中心",
+        "GRID_AREA": "城市片区",
+        "BRANCH": "分公司",
+        "DEPT": "分部门",
+        "EMP": "员工"
+      }
+    },
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M"]
+    }
+  },
+
+  "metric_definitions": [
+    {"code": "should_photo_sign_num", "name": "应该拍照签收量", "base_aggregation": "SUM", "data_type": "bigint"},
+    {"code": "location_photo_num", "name": "位置照件量", "base_aggregation": "SUM", "data_type": "bigint"},
+    {"code": "push_num", "name": "推送件量", "base_aggregation": "SUM", "data_type": "bigint"}
+  ],
+
+  "hierarchy_logic": [
+    {
+      "target_level": "EMP",
+      "calculation_method": "COMPARE_DETAIL_SUMMARY",
+      "source_definition": {"org_levels": []},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "center_code", "center_name", "grid_code", "grid_name", "branch_code", "branch_name", "emp_code", "emp_name", "dt", "platform_type"]}
+    },
+    {
+      "target_level": "DEPT",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["EMP"]},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "center_code", "center_name", "grid_code", "grid_name", "branch_code", "branch_name", "dept_code", "dept_name", "dt", "platform_type"]}
+    },
+    {
+      "target_level": "BRANCH",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["DEPT"]},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "center_code", "center_name", "grid_code", "grid_name", "branch_code", "branch_name", "dt", "platform_type"]}
+    },
+    {
+      "target_level": "GRID_AREA",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["BRANCH"]},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "center_code", "center_name", "grid_code", "grid_name", "dt", "platform_type"]}
+    },
+    {
+      "target_level": "TRANSFER_CENTER",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["GRID_AREA"]},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "center_code", "center_name", "dt", "platform_type"]}
+    },
+    {
+      "target_level": "REGION_MANAGE",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TRANSFER_CENTER"]},
+      "aggregation_granularity": {"group_by_fields": ["region_code", "region_name", "dt", "platform_type"]}
+    },
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["REGION_MANAGE"]},
+      "aggregation_granularity": {"group_by_fields": ["dt", "platform_type"]}
+    }
+  ],
+
+  "diff_threshold": 0.0
+}

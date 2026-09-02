@@ -1,0 +1,83 @@
+{
+  "meta_info": {
+    "mode": "single_table",
+    "table_name": "nike.app_direct_customer_operation_damage",
+    "partition_field": "dt",
+    "date_field": "rpt_date",
+    "time_field": "sum_type"
+  },
+
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "REGION_MANAGE", "TRANSFER_CENTER", "GRID_AREA", "BRANCH", "CUSTOMER", "SHOP"],
+      "level_field": "org_type",
+      "mapping": {
+        "HEAD": "全国",
+        "REGION_MANAGE": "省区",
+        "TRANSFER_CENTER": "中心",
+        "GRID_AREA": "小区",
+        "BRANCH": "分公司",
+        "CUSTOMER": "K码",
+        "SHOP": "店铺"
+      }
+    },
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M"]
+    },
+    "tab_dimensions": {
+      "first_tab_type": {"field": "first_tab_type", "values": ["1", "2", "3"], "comment": "全部:1,品牌:2,非品牌:3"},
+      "second_tab_type": {"field": "second_tab_type", "values": ["1", "2", "3"], "comment": "全部:1,总部直客:2,省区直客:3"},
+      "third_tab_type": {"field": "third_tab_type", "values": ["1", "2", "3", "4"], "comment": "全部:1,总对总:2,总对分:3,分对分:4"}
+    }
+  },
+
+  "metric_definitions": [
+    {"code": "son_num", "name": "分子", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "son_num_ly", "name": "分子-去年同期", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "mother_num", "name": "分母", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "mother_num_ly", "name": "分母-去年同期", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "rate", "name": "率值", "base_aggregation": "DERIVED", "formula": "son_num / mother_num * 100000", "data_type": "decimal"}
+  ],
+
+  "hierarchy_logic": [
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["REGION_MANAGE"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "first_tab_type", "second_tab_type", "third_tab_type", "four_tab_type", "sector_name", "brand_name"]}
+    },
+    {
+      "target_level": "REGION_MANAGE",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TRANSFER_CENTER"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "region_code", "first_tab_type", "second_tab_type", "third_tab_type", "four_tab_type", "sector_name", "brand_name"]}
+    },
+    {
+      "target_level": "TRANSFER_CENTER",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["GRID_AREA"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "center_code", "first_tab_type", "second_tab_type", "third_tab_type", "four_tab_type", "sector_name", "brand_name"]}
+    },
+    {
+      "target_level": "GRID_AREA",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["BRANCH"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "grid_code", "first_tab_type", "second_tab_type", "third_tab_type", "four_tab_type", "sector_name", "brand_name"]}
+    },
+    {
+      "target_level": "BRANCH",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["CUSTOMER"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "branch_code", "first_tab_type", "second_tab_type", "third_tab_type", "four_tab_type", "sector_name", "brand_name"]}
+    },
+    {
+      "target_level": "CUSTOMER",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["SHOP"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "customer_code", "first_tab_type", "second_tab_type", "third_tab_type", "four_tab_type", "sector_name", "brand_name"]}
+    }
+  ],
+
+  "diff_threshold": 0.0
+}
