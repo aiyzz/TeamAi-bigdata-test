@@ -1,0 +1,129 @@
+{
+  "meta_info": {
+    "mode": "single_table",
+    "table_name": "t_app_sign_delay",
+    "partition_field": "rpt_date",
+    "date_field": "rpt_date",
+    "time_field": "sum_type",
+    "description": "签收延误率 - 组织层级汇总验证"
+  },
+
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "REGION_MANAGE", "TRANSFER_CENTER", "BRANCH"],
+      "mapping": {
+        "HEAD": "全国",
+        "REGION_MANAGE": "省区",
+        "TRANSFER_CENTER": "中心",
+        "BRANCH": "网点"
+      }
+    },
+
+    "org_dimension": {
+      "fields": ["org_code", "org_name", "org_type"],
+      "sub_dimensions": {
+        "region": ["region_code", "region_name"],
+        "center": ["center_code", "center_name"],
+        "branch": ["branch_code", "branch_name"]
+      }
+    },
+
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M", "Y"]
+    },
+
+    "tab_dimensions": {
+      "first_tab_type": {
+        "values": ["1", "2", "3", "4", "5"],
+        "labels": {
+          "1": "全部",
+          "2": "抖音",
+          "3": "淘宝",
+          "4": "拼多多",
+          "5": "其他"
+        },
+        "description": "渠道维度"
+      },
+      "second_tab_type": {
+        "values": ["1", "2"],
+        "labels": {
+          "1": "全部",
+          "2": "抖音VIP"
+        },
+        "description": "抖音子渠道维度"
+      }
+    }
+  },
+
+  "metric_definitions": [
+    {
+      "code": "sign_vol",
+      "name": "应签收量",
+      "base_aggregation": "SUM",
+      "data_type": "bigint"
+    },
+    {
+      "code": "delay_vol",
+      "name": "签收延误量",
+      "base_aggregation": "SUM",
+      "data_type": "bigint"
+    },
+    {
+      "code": "delay_rate",
+      "name": "签收延误率(%)",
+      "base_aggregation": "DERIVED",
+      "formula": "delay_vol/sign_vol*100",
+      "data_type": "decimal"
+    },
+    {
+      "code": "ll_sign_vol",
+      "name": "上期-签收量",
+      "base_aggregation": "SUM",
+      "data_type": "bigint"
+    },
+    {
+      "code": "ll_delay_vol",
+      "name": "上期-延误量",
+      "base_aggregation": "SUM",
+      "data_type": "bigint"
+    },
+    {
+      "code": "ll_delay_rate",
+      "name": "上期-延误率(%)",
+      "base_aggregation": "DERIVED",
+      "formula": "ll_delay_vol/ll_sign_vol*100",
+      "data_type": "decimal"
+    }
+  ],
+
+  "hierarchy_logic": [
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["REGION_MANAGE"]},
+      "aggregation_granularity": {
+        "group_by_fields": ["rpt_date", "sum_type", "first_tab_type", "second_tab_type"]
+      }
+    },
+    {
+      "target_level": "REGION_MANAGE",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TRANSFER_CENTER"]},
+      "aggregation_granularity": {
+        "group_by_fields": ["region_code", "region_name", "rpt_date", "sum_type", "first_tab_type", "second_tab_type"]
+      }
+    },
+    {
+      "target_level": "TRANSFER_CENTER",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["BRANCH"]},
+      "aggregation_granularity": {
+        "group_by_fields": ["center_code", "center_name", "rpt_date", "sum_type", "first_tab_type", "second_tab_type"]
+      }
+    }
+  ],
+
+  "diff_threshold": 0.0,
+  "output_format": "sql"
+}

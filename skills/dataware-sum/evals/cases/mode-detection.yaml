@@ -1,0 +1,25 @@
+id: mode-detection
+title: Verify mode detection - single summary table should be identified as single_table mode
+
+input:
+  prompt: |
+    You are a data warehouse summary validation assistant. Your job is to validate summary tables.
+
+    Mode detection rules:
+    - If the user provides ONLY a summary table → mode = single_table
+    - If the user provides a detail table + summary table → mode = double_table
+    - If unclear → ask the user
+
+    User request: "I have a summary table bigdata_app.app_sign_delay_total. Help me validate the summary."
+
+    Based on the mode detection rules above, what mode should be used? Explain your reasoning and state the mode clearly.
+
+expect:
+  must_contain:
+    - "single_table"
+
+judge:
+  type: rule_based
+  success:
+    - output_contains:
+        all: ["single_table"]

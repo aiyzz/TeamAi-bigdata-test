@@ -1,0 +1,49 @@
+{
+  "meta_info": {
+    "mode": "single_table",
+    "table_name": "nike.app_leader_assistant_use_monitor_total",
+    "partition_field": "dt",
+    "date_field": "rpt_date",
+    "time_field": "sum_type"
+  },
+
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "REGION_MANAGE", "TRANSFER_CENTER"],
+      "level_field": "org_type",
+      "mapping": {
+        "HEAD": "全国",
+        "REGION_MANAGE": "省区",
+        "TRANSFER_CENTER": "中心"
+      }
+    },
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M"]
+    }
+  },
+
+  "metric_definitions": [
+    {"code": "should_use_num", "name": "应使用人数", "base_aggregation": "SUM", "data_type": "int"},
+    {"code": "should_use_num_lp", "name": "上期应使用人数", "base_aggregation": "SUM", "data_type": "int"},
+    {"code": "use_num", "name": "使用人数", "base_aggregation": "SUM", "data_type": "int"},
+    {"code": "use_num_lp", "name": "上期使用人数", "base_aggregation": "SUM", "data_type": "int"}
+  ],
+
+  "hierarchy_logic": [
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["REGION_MANAGE"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "first_tab_type"]}
+    },
+    {
+      "target_level": "REGION_MANAGE",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TRANSFER_CENTER"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "first_tab_type", "region_code"]}
+    }
+  ],
+
+  "diff_threshold": 0.0
+}

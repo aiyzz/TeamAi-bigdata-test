@@ -1,0 +1,66 @@
+{
+  "meta_info": {
+    "mode": "single_table",
+    "table_name": "app_close_ring_total_d",
+    "partition_field": "rpt_date",
+    "date_field": "rpt_date",
+    "time_field": "sum_type"
+  },
+
+  "dimension_definitions": {
+    "org_hierarchy": {
+      "order": ["HEAD", "TEAM", "GROUPS", "EMP"],
+      "level_field": "org_type",
+      "mapping": {
+        "HEAD": "全国",
+        "TEAM": "客户团队",
+        "GROUPS": "客服组",
+        "EMP": "客服"
+      }
+    },
+    "time_granularity": {
+      "field": "sum_type",
+      "enum_values": ["D", "M", "Y"]
+    }
+  },
+
+  "metric_definitions": [
+    {"code": "should_close_ring_num", "name": "应闭环量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "close_ring_num", "name": "闭环量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "close_ring_rate", "name": "闭环率", "base_aggregation": "DERIVED", "formula": "close_ring_num/should_close_ring_num", "data_type": "decimal"},
+    {"code": "close_ring_rate_ly", "name": "闭环率去年同期", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "deal_num", "name": "处理量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "deal_ring", "name": "处理率", "base_aggregation": "DERIVED", "formula": "deal_num/should_close_ring_num", "data_type": "decimal"},
+    {"code": "deal_ring_ly", "name": "处理率去年同期", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "should_over_num", "name": "应完结量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "timely_deal_rate", "name": "及时解决率", "base_aggregation": "DERIVED", "formula": "deal_num/should_over_num", "data_type": "decimal"},
+    {"code": "fake_over_num", "name": "虚假完结量", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "split_bill_num", "name": "分单量", "base_aggregation": "SUM", "data_type": "int"},
+    {"code": "split_bill_rate", "name": "分单率(%)", "base_aggregation": "DERIVED", "formula": "split_bill_num/deal_num*100", "data_type": "decimal"},
+    {"code": "split_bill_rate_ly", "name": "去年同期分单率(%)", "base_aggregation": "SUM", "data_type": "decimal"},
+    {"code": "split_bill_close_rate", "name": "分单闭环率(%)", "base_aggregation": "DERIVED", "formula": "close_ring_num/split_bill_num*100", "data_type": "decimal"}
+  ],
+
+  "hierarchy_logic": [
+    {
+      "target_level": "HEAD",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["TEAM"]},
+      "aggregation_granularity": {"group_by_fields": ["rpt_date", "sum_type", "first_tab_type", "second_tab_type", "third_tab_type"]}
+    },
+    {
+      "target_level": "TEAM",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["GROUPS"]},
+      "aggregation_granularity": {"group_by_fields": ["team_code", "team_name", "rpt_date", "sum_type", "first_tab_type", "second_tab_type", "third_tab_type"]}
+    },
+    {
+      "target_level": "GROUPS",
+      "calculation_method": "ROLLUP_SUM",
+      "source_definition": {"org_levels": ["EMP"]},
+      "aggregation_granularity": {"group_by_fields": ["groups_code", "groups_name", "rpt_date", "sum_type", "first_tab_type", "second_tab_type", "third_tab_type"]}
+    }
+  ],
+
+  "diff_threshold": 0.0
+}

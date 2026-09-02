@@ -1,0 +1,54 @@
+
+质量审核报告 | 状态：PASS_WITH_WARNINGS
+
+统计信息:
+ - 总检查项：36
+ - [PASS] 通过：30
+ - [WARN] 警告：6
+ - [FAIL] 错误：0
+
+【结构规范性】:
+ [OK] meta_info 存在
+ [OK] meta_info.table_name 存在
+ [OK] meta_info.partition_field 存在
+ [OK] dimension_definitions 存在
+ [OK] org_hierarchy 存在
+ [OK] time_granularity 存在
+ [OK] metric_definitions 存在
+ [OK] metric_definitions 包含 5 个指标
+ [OK] hierarchy_logic 存在
+
+【内容正确性】:
+ [OK] 表名格式正确 (库.表)
+ [OK] 时间粒度枚举值有效
+ [OK] metric_definitions code 唯一性检查通过
+ [OK] DERIVED 指标 rate 公式变量引用正确
+ [OK] DERIVED 指标 rate 无循环引用
+ [OK] org_hierarchy.order 包含 7 个层级
+ [OK] hierarchy_logic: target_level 'HEAD' 在 order 中
+ [OK] ROLLUP_SUM: 'HEAD' > 'REGION_MANAGE' 层级顺序正确
+ [OK] hierarchy_logic: target_level 'REGION_MANAGE' 在 order 中
+ [OK] ROLLUP_SUM: 'REGION_MANAGE' > 'TRANSFER_CENTER' 层级顺序正确
+ [OK] hierarchy_logic: target_level 'TRANSFER_CENTER' 在 order 中
+ [OK] ROLLUP_SUM: 'TRANSFER_CENTER' > 'GRID_AREA' 层级顺序正确
+ [OK] hierarchy_logic: target_level 'GRID_AREA' 在 order 中
+ [OK] ROLLUP_SUM: 'GRID_AREA' > 'BRANCH' 层级顺序正确
+ [OK] hierarchy_logic: target_level 'BRANCH' 在 order 中
+ [OK] ROLLUP_SUM: 'BRANCH' > 'CUSTOMER' 层级顺序正确
+ [OK] hierarchy_logic: target_level 'CUSTOMER' 在 order 中
+ [OK] ROLLUP_SUM: 'CUSTOMER' > 'SHOP' 层级顺序正确
+ [OK] diff_threshold=0.0 合理
+ [WARN] hierarchy_logic: HEAD 的 group_by_fields 未包含 level_field 'org_type'
+ [WARN] hierarchy_logic: REGION_MANAGE 的 group_by_fields 未包含 level_field 'org_type'
+ [WARN] hierarchy_logic: TRANSFER_CENTER 的 group_by_fields 未包含 level_field 'org_type'
+ [WARN] hierarchy_logic: GRID_AREA 的 group_by_fields 未包含 level_field 'org_type'
+ [WARN] hierarchy_logic: BRANCH 的 group_by_fields 未包含 level_field 'org_type'
+ [WARN] hierarchy_logic: CUSTOMER 的 group_by_fields 未包含 level_field 'org_type'
+
+【数据类型一致性】:
+ [OK] rate 派生指标有计算公式
+ [OK] 以下指标已使用数值类型：['son_num', 'son_num_ly', 'mother_num', 'mother_num_ly', 'rate']
+
+================================================================================
+[WARNING] 存在非致命问题，不影响功能，但仍可生成测试 SQL
+================================================================================

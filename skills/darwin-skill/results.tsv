@@ -1,0 +1,7 @@
+timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
+2026-04-23T10:00	baseline	dataware-sum	-	82	baseline	-	初始评估	dry_run
+2026-06-10T09:50	baseline	generate-test-cases	-	79.0	baseline	-	初评：边界条件6/10最弱，实测7/10，工作流9/10最强	dry_run
+2026-06-10T09:55	r1	generate-test-cases	79.0	81.0	keep	边界条件	补8个fallback：requirements空/wiki溢出/写入失败/时间戳冲突/MEMORY-SCHEMA同步	dry_run
+2026-06-10T09:57	r2	generate-test-cases	81.0	83.5	keep	实测表现	Phase 1.5补充数仓表筛选策略：表名优先→字段匹配→最多5张	dry_run
+2026-06-10T09:59	r3	generate-test-cases	83.5	83.5	keep	整体架构	约束章节标签规则3处重复→精简为引用，减少冗余	dry_run
+2026-06-10T10:01	r4	generate-test-cases	83.5	84.3	keep	Frontmatter	补充英文触发词：generate/create test cases	dry_run
