@@ -1,5 +1,10 @@
 ---
 name: git-context
+description: name: git-context
+---
+
+---
+name: git-context
 description: name: git-analyzer
 ---
 
