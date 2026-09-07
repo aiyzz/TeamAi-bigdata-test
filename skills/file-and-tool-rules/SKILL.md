@@ -1,4 +1,9 @@
 ---
+name: file-and-tool-rules
+description: name: file-organizer
+---
+
+---
 name: file-organizer
 description: Triggered when the user needs to organize project files, analyze directory structure, or generate a project report. Use MCP tools to read file contents and produce a structured organization report. Trigger phrases include "help me organize this project", "look at the directory structure", "generate a project summary".
 ---

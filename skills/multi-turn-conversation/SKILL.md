@@ -1,4 +1,9 @@
 ---
+name: multi-turn-conversation
+description: name: sdd-riper
+---
+
+---
 name: sdd-riper
 description: SDD-RIPER workflow executor with phase gating
 version: 1.0.0

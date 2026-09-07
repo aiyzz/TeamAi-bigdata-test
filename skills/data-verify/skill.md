@@ -1,5 +1,10 @@
 ---
 name: data-verify
+description: name: data-verify
+---
+
+---
+name: data-verify
 description: 数据仓库 ETL 验数技能（对话式），自动识别验证场景并生成 SQL。支持生产表对比（能力1-4）和基准表溯源验证（能力6）。触发词：验数、数据验证、ETL验证、比对、数据比对、基准表验证、溯源验证。
 ---
 

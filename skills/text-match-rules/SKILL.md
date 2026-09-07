@@ -1,4 +1,9 @@
 ---
+name: text-match-rules
+description: name: code-review-assistant
+---
+
+---
 name: code-review-assistant
 description: Triggered when the user submits code or requests a code review. Automatically analyzes code quality, identifies potential bugs, security vulnerabilities, and performance issues, and provides improvement suggestions. Trigger phrases include "take a look at this code", "review this", "is there a problem with this function".
 ---
