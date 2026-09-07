@@ -1,4 +1,9 @@
 ---
+name: trigger-detection
+description: name: mood-booster
+---
+
+---
 name: mood-booster
 description: Triggered when the user expresses boredom, low mood, frustration, irritation, or a need to relax. Responds with warm words of comfort and tells a joke to lighten the atmosphere. Trigger phrases include "I'm so bored", "feeling down", "so frustrated", "gloomy", "not happy", "I'm tired".
 ---

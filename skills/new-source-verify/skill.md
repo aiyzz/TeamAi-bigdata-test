@@ -1,5 +1,10 @@
 ---
 name: new-source-verify
+description: name: new-source-verify
+---
+
+---
+name: new-source-verify
 description: 模型表优化场景下的新增数据来源验证。当用户提到"新增数据来源验证"、"新增来源测试"、"模型表优化测试"、"结果表增加数据验证"、"new data source verification"时激活。用于验证 ETL 优化后结果表新增数据的正确性、来源可追溯性、原有数据完整性。
 ---
 

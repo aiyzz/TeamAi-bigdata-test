@@ -1,5 +1,10 @@
 ---
 name: code-stats
+description: name: code-stats
+---
+
+---
+name: code-stats
 description: Analyzes code files and reports statistics including line counts, file counts by extension, and total size. Use this skill whenever the user wants to understand the composition of a codebase - asking about "how many lines of code", "what file types exist", "code distribution", or needing a quick audit of project size and structure. Make sure to invoke this skill when users mention analyzing codebases, counting lines, checking file distributions, or auditing code.
 version: 1.0.0
 ---
