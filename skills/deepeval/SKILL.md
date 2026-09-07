@@ -1,5 +1,10 @@
 ---
 name: deepeval
+description: name: deepeval
+---
+
+---
+name: deepeval
 description: >
   DeepEval evaluation workflow for AI agents and LLM applications. TRIGGER when
   the user wants to evaluate or improve an AI agent, tool-using workflow,

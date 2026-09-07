@@ -1,4 +1,9 @@
 ---
+name: script-judge-eval
+description: name: data-transformer
+---
+
+---
 name: data-transformer
 description: Triggered when the user needs to convert data formats, such as CSV to JSON, JSON to YAML, or XML to JSON. Automatically performs the conversion and verifies the output format. Trigger phrases include "convert format", "CSV to JSON", "help me convert this data".
 ---

@@ -1,4 +1,9 @@
 ---
+name: full-report-pipeline
+description: name: code-quality-analyzer
+---
+
+---
 name: code-quality-analyzer
 description: Triggered when the user submits code or requests a comprehensive code quality analysis. Automatically performs static analysis, code review, and quality scoring. Analysis covers coding standards, potential bugs, performance issues, and security vulnerabilities. Trigger phrases include "analyze code quality", "comprehensive check", "code score".
 ---

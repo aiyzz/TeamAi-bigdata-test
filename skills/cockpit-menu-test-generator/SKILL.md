@@ -1,4 +1,9 @@
 ---
+name: cockpit-menu-test-generator
+description: name: "cockpit-menu-test-generator"
+---
+
+---
 name: "cockpit-menu-test-generator"
 description: "从 HAR 录制文件自动解析接口并生成 HttpRunner 测试脚本。当用户说'生成测试脚本'、'从HAR生成测试'、'xxx菜单测试'时触发。"
 ---

@@ -1,4 +1,9 @@
 ---
+name: agent-judge-criteria
+description: name: code-quality-reviewer
+---
+
+---
 name: code-quality-reviewer
 description: Reviews code and provides detailed quality assessment
 version: 1.0.0
